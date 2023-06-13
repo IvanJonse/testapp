@@ -1,26 +1,42 @@
 import { Injectable } from '@nestjs/common';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 import { CreateRequestDto } from './dto/create-request.dto';
 import { UpdateRequestDto } from './dto/update-request.dto';
+import { RequestEntity } from './entities/request.entity';
+import { ResponseRequestDto } from './dto/response-request.dto';
+import { UserEntity } from './entities/user.entity';
 
 @Injectable()
 export class RequestsService {
-  create(createRequestDto: CreateRequestDto) {
-    return 'This action adds a new request';
+  constructor(
+    @InjectRepository(RequestEntity) private request: Repository<RequestEntity>,
+    @InjectRepository(UserEntity) private user: Repository<UserEntity>,
+    
+    ) {
+    }
+
+  createRequest(body: CreateRequestDto): Promise<ResponseRequestDto> {
+    return this.request.save(body)
   }
 
-  findAll() {
-    return `This action returns all requests`;
+  findAllRequest() {
+    return this.request.find()
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} request`;
+  findOneRequest(requestId: number): Promise<ResponseRequestDto> {
+    return this.request.findOneOrFail({
+      where: {
+        requestId
+      }
+    })
   }
 
-  update(id: number, updateRequestDto: UpdateRequestDto) {
-    return `This action updates a #${id} request`;
+  async updateRequest(requestId: number, body: UpdateRequestDto) {
+   await this.request.update(requestId, body)
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} request`;
+  async removeRequest(requestId: number) {
+    await this.request.delete(requestId)
   }
 }

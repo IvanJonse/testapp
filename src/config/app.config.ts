@@ -18,6 +18,10 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
   username: envFile.dbUsername,
   password: envFile.dbPassword,
   database: envFile.dbDatabase,
+  migrationsRun: true,
+  entities: [__dirname + '/../**/*.entity.{ts,js}'],
+  migrations: [__dirname + '/../migrations/*.{ts,js}'],
+  subscribers: [__dirname + '/../**/*.subscriber.{ts,js}'],
 };
 
 export default () => ({

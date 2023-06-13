@@ -1,34 +1,37 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { RequestsService } from './requests.service';
 import { CreateRequestDto } from './dto/create-request.dto';
 import { UpdateRequestDto } from './dto/update-request.dto';
+import { ResponseRequestDto } from './dto/response-request.dto';
 
+@ApiTags('Requests')
 @Controller('requests')
 export class RequestsController {
   constructor(private readonly requestsService: RequestsService) {}
 
   @Post()
-  create(@Body() createRequestDto: CreateRequestDto) {
-    return this.requestsService.create(createRequestDto);
+  createRequest(@Body() body: CreateRequestDto): Promise<ResponseRequestDto> {
+    return this.requestsService.createRequest(body);
   }
 
   @Get()
-  findAll() {
-    return this.requestsService.findAll();
+  findAllRequest()  {
+    return this.requestsService.findAllRequest();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.requestsService.findOne(+id);
+  @Get(':requestId')
+  findOneRequest(@Param('requestId') requestId: number) {
+    return this.requestsService.findOneRequest(requestId);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateRequestDto: UpdateRequestDto) {
-    return this.requestsService.update(+id, updateRequestDto);
+  @Patch(':requestId')
+  updateRequest(@Param('requestId') requestId: number, @Body() updateRequestDto: UpdateRequestDto) {
+    return this.requestsService.updateRequest(requestId, updateRequestDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.requestsService.remove(+id);
+  @Delete(':requestId')
+  removeRequest(@Param('requestId') requestId: string) {
+    return this.requestsService.removeRequest(+requestId);
   }
 }
