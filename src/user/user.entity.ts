@@ -2,8 +2,6 @@ import {
     Entity,
     Column,
     PrimaryGeneratedColumn,
-    ManyToOne,
-    JoinColumn,
     OneToMany
   } from 'typeorm';
 import { RequestEntity } from '../requests/entities/request.entity';
@@ -30,7 +28,8 @@ export class UserEntity {
         select: false
     })
     password: string
-
+    
+    //TODO дефолтная роль, убрать null
     @Column({
         type: 'enum',
         enum: RoleEnum,

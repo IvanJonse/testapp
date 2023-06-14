@@ -3,23 +3,27 @@ import {
   ApiModelPropertyOptional
 } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
 import { isPasswordRegex } from '../validation/password.regex';
-import { IsEmail, IsNotEmpty, IsOptional, Matches } from 'class-validator';
+import { IsEmail, IsOptional, IsString, Matches } from "class-validator";
 import { isPhoneRegex } from '../validation/phone.regex';
 
 export class SignupDto {
-  @ApiModelProperty()
+  @ApiModelPropertyOptional()
   @Matches(isPhoneRegex)
-  @IsNotEmpty()
+  @IsString()
+  @IsOptional()
   phone: string;
   
-  @ApiModelPropertyOptional()
+  @ApiModelProperty()
   @IsEmail()
-  @IsNotEmpty()
-  @IsOptional()
+  @IsString()
   email: string;
   
   @ApiModelProperty()
   @Matches(isPasswordRegex)
-  @IsNotEmpty()
+  @IsString()
   password: string;
+  
+  @ApiModelProperty()
+  @IsString()
+  name: string;
 }

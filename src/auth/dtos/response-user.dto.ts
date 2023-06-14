@@ -1,8 +1,8 @@
 import {
   ApiModelPropertyOptional,
   ApiModelProperty
-} from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
-import { RoleEnum } from '../enums/role.enum';
+} from "@nestjs/swagger/dist/decorators/api-model-property.decorator";
+import { RoleEnum } from "../enums/role.enum";
 
 export class ResponseUserDto {
   @ApiModelProperty()
@@ -15,10 +15,10 @@ export class ResponseUserDto {
   password: string;
   
   @ApiModelPropertyOptional({
-	type: 'enum',
-	enum: Object.keys(RoleEnum),
-	example: RoleEnum.USER,
-	default: RoleEnum.USER
+    type: "enum",
+    enum: Object.keys(RoleEnum),
+    example: RoleEnum.USER,
+    default: RoleEnum.USER
   })
   role: RoleEnum;
   
@@ -27,5 +27,5 @@ export class ResponseUserDto {
   
   @ApiModelProperty()
   phone: string;
-
+  
 }

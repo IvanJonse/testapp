@@ -8,6 +8,10 @@ export type configType = {
   jwtSecret: string;
   jwtExpiresIn: string;
   dbHost: string;
+  mailPass: string;
   mailUser: string;
-  mailFrom: string;
+  mailSecure: boolean;
+  mailPort: number;
+  mailHost: string;
+  mailFrom: string ;
 };

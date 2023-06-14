@@ -1,10 +1,11 @@
-import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { RequestsModule } from './requests/requests.module';
-import { UserModule } from './user/user.module';
-import configFile from './config/app.config';
-import { AuthModule } from './auth/auth.module';
+import { Module } from "@nestjs/common";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import { ConfigModule, ConfigService } from "@nestjs/config";
+import { RequestsModule } from "./requests/requests.module";
+import { UserModule } from "./user/user.module";
+import configFile from "./config/app.config";
+import { AuthModule } from "./auth/auth.module";
+import { MailerModule, MailerOptions } from "@nestjs-modules/mailer";
 
 @Module({
   imports: [
@@ -21,12 +22,20 @@ import { AuthModule } from './auth/auth.module';
       ],
       inject: [ConfigService],
       useFactory: (config: ConfigService) => {
-      return config.get('database');
+        return config.getOrThrow("database");
+      }
+    }),
+    MailerModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService): MailerOptions => {
+        return config.getOrThrow('mail');
       },
     }),
-    UserModule,    
+    UserModule
   ],
   controllers: [],
-  providers: [],
+  providers: []
 })
-export class AppModule {}
+export class AppModule {
+}

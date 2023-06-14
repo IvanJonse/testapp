@@ -1,75 +1,125 @@
-import { Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
-import { CreateRequestDto } from './dto/create-request.dto';
-import { UpdateRequestDto } from './dto/update-request.dto';
-import { RequestEntity } from './entities/request.entity';
-import { ResponseRequestDto } from './dto/response-request.dto';
-import { UserEntity } from '../user/user.entity';
-import { RequestStatusEnum } from './enums/request-status.enum';
-import { statusParamDto } from './dto/status-param.dto';
+import { BadRequestException, Injectable } from "@nestjs/common";
+import { DataSource, Repository } from "typeorm";
+import { InjectRepository } from "@nestjs/typeorm";
+import { CreateRequestDto } from "./dto/create-request.dto";
+import { UpdateRequestDto } from "./dto/update-request.dto";
+import { RequestEntity } from "./entities/request.entity";
+import { ResponseRequestDto, ResponseRequestPaginateDto } from "./dto/response-request.dto";
+import { UserEntity } from "../user/user.entity";
+import { RequestStatusEnum } from "./enums/request-status.enum";
+import { QueryRequestDto } from "./dto/query-request.dto";
+import { UserService } from "../user/user.service";
+import { CreatedRequest, ResolvedRequest } from "../mail/templates";
+import { MailerService } from "@nestjs-modules/mailer";
 
 @Injectable()
 export class RequestsService {
   constructor(
     @InjectRepository(RequestEntity) private request: Repository<RequestEntity>,
     @InjectRepository(UserEntity) private user: Repository<UserEntity>,
+    private userService: UserService,
+    private mailService: MailerService,
+    private dataSource: DataSource
+  ) {
+  }
+  
+  
+  async createRequest(body: CreateRequestDto): Promise<ResponseRequestDto> {
     
-    ) {
-    }
-
-  createRequest( body: CreateRequestDto): Promise<ResponseRequestDto> {
-    return this.request.save(body)
+    const userId: number = await this.userService.findUserOrCreate(
+      body.email,
+      body.name
+    );
+    const request = await this.request.save({
+      message: body.message,
+      userId
+    });
+    
+    this.mailService
+      .sendMail(CreatedRequest(body.email, request.requestId))
+      .catch((error) => console.error(error));
+    
+    return request;
   }
-
-  findOneByEmail(status: RequestStatusEnum, updatedAt: Date) {
-    return this
-      .request
-      .createQueryBuilder('u')
-      .where('u.status = :status', { status })
-      .andWhere('u.updated_at = :updatedAt', {updatedAt})
-      .getOne();
+  
+  async findAllRequest(
+    query: QueryRequestDto
+  ): Promise<ResponseRequestPaginateDto> {
+    const queryBuilder = this.request
+      .createQueryBuilder("r")
+      .leftJoinAndSelect("r.user", "u");
+    
+    if (query.status) {
+      queryBuilder.where("r.status = :status", {
+        status: query.status
+      });
     }
-
-  findAllRequest(): Promise<ResponseRequestDto[]>  {
-    // this.findOneByEmail()
-    return this.request.find()
+    
+    if (query.updatedAt) {
+      queryBuilder.andWhere("r.updated_at::date = :updatedAt", {
+        updatedAt: query.updatedAt
+      });
+    }
+    
+    queryBuilder
+      .take(query.take)
+      .skip(query.skip);
+    
+    const [items, count] = await queryBuilder.getManyAndCount();
+    
+    return {
+      items,
+      count
+    };
   }
-
+  
   findOneRequest(requestId: number): Promise<ResponseRequestDto> {
     return this.request.findOneOrFail({
       where: {
         requestId
       }
-    })
+    });
   }
-
-  setStatus(request_id: number,body: UpdateRequestDto) {    
-    const query = this.request.createQueryBuilder()
-     .update(body)
-     .where("request_id = :request_id", {request_id})
-     if (body.comment) {
-         query.set({ 
-          status: RequestStatusEnum.RESOLVED ,
-          comment: body.comment
-       })
-     } 
-     query.execute()
-   }
- 
-   async updateRequest(request_id: number, body: UpdateRequestDto) {
-    await this.setStatus(request_id, body )
-    
-   }
-
-
-
-
   
-
- 
-
+  async updateRequest(requestId: number, body: UpdateRequestDto) {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.startTransaction();
+    try {
+      await queryRunner.manager
+        .createQueryBuilder(RequestEntity, 'r')
+        .update(body)
+        .set({
+          status: RequestStatusEnum.RESOLVED,
+          comment: body.comment,
+        })
+        .where("r.request_id = :requestId", { requestId })
+        .execute();
+      
+      const request = await queryRunner.manager.findOneOrFail(RequestEntity, {
+        relations: ['user'],
+        where: {
+          requestId,
+        },
+      });
+      
+      if (request.status !== RequestStatusEnum.RESOLVED) {
+        throw new BadRequestException();
+      }
+      
+      await queryRunner.commitTransaction();
+      
+      this.mailService
+        .sendMail(ResolvedRequest(request.user.email, requestId))
+        .catch((error) => console.error(error));
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw error;
+    } finally {
+      await queryRunner.release();
+    }
+  }
+  
   async removeRequest(requestId: number) {
-    await this.request.delete(requestId)
+    await this.request.delete(requestId);
   }
 }

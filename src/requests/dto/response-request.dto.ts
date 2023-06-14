@@ -1,20 +1,12 @@
 import { ApiModelProperty, ApiModelPropertyOptional } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
 import { RequestStatusEnum } from '../enums/request-status.enum';
-import { RoleEnum } from 'src/auth/enums/role.enum';
 
 export class ResponseRequestDto {
+    @ApiModelProperty()
+    userId: number
 
     @ApiModelProperty()
-    userId?: number
-
-    @ApiModelProperty()
-    requestId?: number
-
-    @ApiModelProperty()
-    name?: string
-
-    @ApiModelProperty()
-    email?: string
+    requestId: number
 
     @ApiModelPropertyOptional({
         type: 'enum',
@@ -22,20 +14,28 @@ export class ResponseRequestDto {
         example: RequestStatusEnum.ACTIVE,
         default: RequestStatusEnum.ACTIVE
     })
-    status?: RequestStatusEnum
+    status: RequestStatusEnum
 
     @ApiModelProperty()
-    message?: string
+    message: string
 
     @ApiModelProperty()
-    comment?: string
+    comment: string
 
     @ApiModelPropertyOptional()
-    role?: RoleEnum
+    createdAt: Date
 
     @ApiModelPropertyOptional()
-    createdAt?: Date
+    updatedAt: Date
+}
 
-    @ApiModelPropertyOptional()
-    updatedAt?: Date
+export class ResponseRequestPaginateDto {
+    @ApiModelProperty({
+        type: () => ResponseRequestDto,
+        isArray: true
+    })
+    items: ResponseRequestDto[];
+    
+    @ApiModelProperty()
+    count: number;
 }
