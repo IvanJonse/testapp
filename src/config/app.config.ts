@@ -12,6 +12,8 @@ export const envFile: configType = {
   appHost: process.env.APP_HOST || 'http://localhost:5000',
   jwtSecret: process.env.JWT_KEY || 'someSecret',
   jwtExpiresIn: process.env.JWT_EXPIRES || '7d',
+  mailUser: process.env.MAIL_USER,
+  mailFrom : process.env.MAIL_FROM
 
  };
 

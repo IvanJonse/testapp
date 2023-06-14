@@ -4,6 +4,9 @@ import { RequestsService } from './requests.service';
 import { RequestsController } from './requests.controller';
 import { RequestEntity } from './entities/request.entity';
 import { UserEntity } from '../user/user.entity';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { envFile } from 'src/config/app.config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -11,7 +14,9 @@ import { UserEntity } from '../user/user.entity';
       RequestEntity,
       UserEntity,
     ]),
+    
   ],
+  
   controllers: [RequestsController],
   providers: [RequestsService]
 })

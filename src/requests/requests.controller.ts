@@ -5,6 +5,7 @@ import {
   Body, 
   Patch, 
   Param,
+  Query,
   ParseIntPipe,
   Delete, 
   HttpCode,
@@ -20,6 +21,9 @@ import { Roles } from 'src/auth/decorators/roles.decorator';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { RequestStatusEnum } from './enums/request-status.enum';
+import { IsEnum } from 'class-validator';
+import { statusParamDto } from './dto/status-param.dto';
+import { User } from 'src/auth/decorators/user.decorator';
 
 @ApiTags('Requests')
 @Controller('requests')
@@ -30,7 +34,11 @@ export class RequestsController {
     type: ResponseRequestDto
   })
   @Post()
-  createRequest(@Body() body: CreateRequestDto): Promise<ResponseRequestDto> {
+  createRequest(
+    // @User('userId', ParseIntPipe) userId: number,
+    @Body() body: CreateRequestDto
+    
+    ): Promise<ResponseRequestDto> {
     return this.requestsService.createRequest(body);
   }
 
@@ -40,10 +48,9 @@ export class RequestsController {
   })
   @Get()
   findAllRequest(
-    @Param('status') status: RequestStatusEnum, 
-    @Param('updatedAt') updatedAt: Date  
+    
     ): Promise<ResponseRequestDto[]>  {
-    return this.requestsService.findAllRequest(status, updatedAt);
+    return this.requestsService.findAllRequest();
   }
 
   @ApiOkResponse({

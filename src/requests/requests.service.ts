@@ -7,6 +7,7 @@ import { RequestEntity } from './entities/request.entity';
 import { ResponseRequestDto } from './dto/response-request.dto';
 import { UserEntity } from '../user/user.entity';
 import { RequestStatusEnum } from './enums/request-status.enum';
+import { statusParamDto } from './dto/status-param.dto';
 
 @Injectable()
 export class RequestsService {
@@ -17,12 +18,11 @@ export class RequestsService {
     ) {
     }
 
-  createRequest(body: CreateRequestDto): Promise<ResponseRequestDto> {
+  createRequest( body: CreateRequestDto): Promise<ResponseRequestDto> {
     return this.request.save(body)
   }
 
   findOneByEmail(status: RequestStatusEnum, updatedAt: Date) {
-    
     return this
       .request
       .createQueryBuilder('u')
@@ -31,8 +31,8 @@ export class RequestsService {
       .getOne();
     }
 
-  findAllRequest(status: RequestStatusEnum, updatedAt: Date ): Promise<ResponseRequestDto[]>  {
-    this.findOneByEmail(status, updatedAt)
+  findAllRequest(): Promise<ResponseRequestDto[]>  {
+    // this.findOneByEmail()
     return this.request.find()
   }
 
@@ -44,20 +44,30 @@ export class RequestsService {
     })
   }
 
-  setStatus(requestId: number,body: UpdateRequestDto) {    
-   const query = this.request.createQueryBuilder()
-    .update(body)
-    .where("request_id = :requestId", {requestId})
-    if (body.comment) {
-        query.set({ status: RequestStatusEnum.RESOLVED 
-      })
-    } 
-    query.execute()
-  }
+  setStatus(request_id: number,body: UpdateRequestDto) {    
+    const query = this.request.createQueryBuilder()
+     .update(body)
+     .where("request_id = :request_id", {request_id})
+     if (body.comment) {
+         query.set({ 
+          status: RequestStatusEnum.RESOLVED ,
+          comment: body.comment
+       })
+     } 
+     query.execute()
+   }
+ 
+   async updateRequest(request_id: number, body: UpdateRequestDto) {
+    await this.setStatus(request_id, body )
+    
+   }
 
-  async updateRequest(requestId: number, body: UpdateRequestDto) {
-   await this.setStatus(requestId, body )
-  }
+
+
+
+  
+
+ 
 
   async removeRequest(requestId: number) {
     await this.request.delete(requestId)

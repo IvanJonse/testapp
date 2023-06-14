@@ -1,6 +1,7 @@
 import { ApiModelProperty, ApiModelPropertyOptional } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
-import { IsDateString, IsOptional, IsString, ValidateIf, IsNotEmpty, IsNumber } from 'class-validator';
+import { IsDateString, IsOptional, IsString, ValidateIf, IsNotEmpty, IsNumber, IsEnum } from 'class-validator';
 import { RequestStatusEnum } from '../enums/request-status.enum';
+import { statusParamDto } from './status-param.dto';
 
 export class CreateRequestDto {
 
@@ -13,6 +14,8 @@ export class CreateRequestDto {
         example: RequestStatusEnum.ACTIVE,
         default: RequestStatusEnum.ACTIVE
     })
+    @IsOptional()
+    @IsEnum(RequestStatusEnum)
     status: RequestStatusEnum
 
     @ApiModelPropertyOptional()
