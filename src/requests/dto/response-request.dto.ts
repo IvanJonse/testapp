@@ -1,6 +1,6 @@
 import { ApiModelProperty, ApiModelPropertyOptional } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
 import { RequestStatusEnum } from '../enums/request-status.enum';
-import { RoleEnum } from '../enums/role.enum';
+import { RoleEnum } from 'src/auth/enums/role.enum';
 
 export class ResponseRequestDto {
 
@@ -16,14 +16,19 @@ export class ResponseRequestDto {
     @ApiModelProperty()
     email?: string
 
-    @ApiModelPropertyOptional()
+    @ApiModelPropertyOptional({
+        type: 'enum',
+        enum: Object.keys(RequestStatusEnum),
+        example: RequestStatusEnum.ACTIVE,
+        default: RequestStatusEnum.ACTIVE
+    })
     status?: RequestStatusEnum
 
     @ApiModelProperty()
-    message: string
+    message?: string
 
     @ApiModelProperty()
-    comment: string
+    comment?: string
 
     @ApiModelPropertyOptional()
     role?: RoleEnum

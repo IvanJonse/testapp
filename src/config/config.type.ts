@@ -5,5 +5,7 @@ export type configType = {
   dbUsername: string;
   dbPassword: string;
   dbDatabase: string;
+  jwtSecret: string;
+  jwtExpiresIn: string;
   dbHost: string;
 };

@@ -5,7 +5,8 @@ import { CreateRequestDto } from './dto/create-request.dto';
 import { UpdateRequestDto } from './dto/update-request.dto';
 import { RequestEntity } from './entities/request.entity';
 import { ResponseRequestDto } from './dto/response-request.dto';
-import { UserEntity } from './entities/user.entity';
+import { UserEntity } from '../user/user.entity';
+import { RequestStatusEnum } from './enums/request-status.enum';
 
 @Injectable()
 export class RequestsService {
@@ -20,7 +21,18 @@ export class RequestsService {
     return this.request.save(body)
   }
 
-  findAllRequest() {
+  findOneByEmail(status: RequestStatusEnum, updatedAt: Date) {
+    
+    return this
+      .request
+      .createQueryBuilder('u')
+      .where('u.status = :status', { status })
+      .andWhere('u.updated_at = :updatedAt', {updatedAt})
+      .getOne();
+    }
+
+  findAllRequest(status: RequestStatusEnum, updatedAt: Date ): Promise<ResponseRequestDto[]>  {
+    this.findOneByEmail(status, updatedAt)
     return this.request.find()
   }
 
@@ -32,8 +44,19 @@ export class RequestsService {
     })
   }
 
+  setStatus(requestId: number,body: UpdateRequestDto) {    
+   const query = this.request.createQueryBuilder()
+    .update(body)
+    .where("request_id = :requestId", {requestId})
+    if (body.comment) {
+        query.set({ status: RequestStatusEnum.RESOLVED 
+      })
+    } 
+    query.execute()
+  }
+
   async updateRequest(requestId: number, body: UpdateRequestDto) {
-   await this.request.update(requestId, body)
+   await this.setStatus(requestId, body )
   }
 
   async removeRequest(requestId: number) {

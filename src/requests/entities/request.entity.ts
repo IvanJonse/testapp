@@ -4,13 +4,16 @@ import {
     PrimaryGeneratedColumn,
     OneToMany,
     ManyToOne,
-    JoinColumn
+    JoinColumn,
+    UpdateDateColumn,
+    CreateDateColumn
   } from 'typeorm';
 import { RequestStatusEnum } from '../enums/request-status.enum';
-import { UserEntity } from './user.entity';
+import { UserEntity } from '../../user/user.entity';
 
 @Entity('requests')
 export class RequestEntity {
+
     @PrimaryGeneratedColumn( 'increment', {
         name: 'request_id'
     })
@@ -19,7 +22,6 @@ export class RequestEntity {
     @Column({
         type: 'enum',
         enum: RequestStatusEnum,
-        nullable: true,
         default: RequestStatusEnum.ACTIVE
     })
     status: RequestStatusEnum
@@ -32,13 +34,13 @@ export class RequestEntity {
     @Column()
     message: string
 
-    @Column('timestamp', {
+    @CreateDateColumn({
     name: 'created_at',
     nullable: true
     })
     createdAt: Date;
     
-    @Column('timestamp', {
+    @UpdateDateColumn({
     name: 'updated_at',
     nullable: true
     })

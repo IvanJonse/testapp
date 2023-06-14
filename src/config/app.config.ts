@@ -1,4 +1,5 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { JwtModuleOptions } from '@nestjs/jwt';
 import { configType } from './config.type';
 
 export const envFile: configType = {
@@ -9,6 +10,9 @@ export const envFile: configType = {
   dbUsername: process.env.DB_USERNAME || 'root',
   appPort: Number(process.env.APP_PORT) || 5000,
   appHost: process.env.APP_HOST || 'http://localhost:5000',
+  jwtSecret: process.env.JWT_KEY || 'someSecret',
+  jwtExpiresIn: process.env.JWT_EXPIRES || '7d',
+
  };
 
 export const typeOrmConfig: TypeOrmModuleOptions = {
@@ -22,6 +26,17 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
   entities: [__dirname + '/../**/*.entity.{ts,js}'],
   migrations: [__dirname + '/../migrations/*.{ts,js}'],
   subscribers: [__dirname + '/../**/*.subscriber.{ts,js}'],
+};
+
+export const jwtOptions: JwtModuleOptions = {
+  secret: envFile.jwtSecret,
+  signOptions: {
+    expiresIn: envFile.jwtExpiresIn,
+  },
+};
+
+export const hashConfig = {
+  saltRounds: Number(process.env.SALT_ROUNDS || 10)
 };
 
 export default () => ({

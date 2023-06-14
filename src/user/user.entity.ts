@@ -6,10 +6,10 @@ import {
     JoinColumn,
     OneToMany
   } from 'typeorm';
-import { RoleEnum } from '../enums/role.enum';
-import { RequestEntity } from './request.entity';
+import { RequestEntity } from '../requests/entities/request.entity';
+import { RoleEnum } from 'src/auth/enums/role.enum';
 
-@Entity('user')
+@Entity('users')
 export class UserEntity {
 
     @PrimaryGeneratedColumn('increment', {
@@ -22,6 +22,14 @@ export class UserEntity {
 
     @Column()
     email: string
+
+    @Column()
+    phone: string;
+
+    @Column({
+        select: false
+    })
+    password: string
 
     @Column({
         type: 'enum',
@@ -36,7 +44,5 @@ export class UserEntity {
         request => request.user 
     )
     requests: RequestEntity[]
-
-   
 
 }
