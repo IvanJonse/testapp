@@ -45,7 +45,7 @@ export class UserService {
     });
   
     this.mailService
-      .sendMail(Signup(user.email, password))
+      .sendMail(Signup(newUser.email, password))
       .catch((error) => console.error(error));
 
     

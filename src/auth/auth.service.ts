@@ -1,14 +1,14 @@
 import { Injectable } from "@nestjs/common";
-import { JwtPayload } from "./interfaces/jwt-payload.interface";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { JwtService } from "@nestjs/jwt";
+import { JwtPayload } from "./interfaces/jwt-payload.interface";
 import { SignupDto } from "./dtos/signup.dto";
 import { AlreadyExists, EmailError, PasswordError } from "../http.exceptions";
 import { SigninDto } from "./dtos/signin.dto";
 import { ResponseAuthDto } from "./dtos/response-auth.dto";
-import { UserEntity } from "src/user/user.entity";
-import { hashConfig } from "src/config/app.config";
+import { UserEntity } from "../user/user.entity";
+import { hashConfig } from "../config/app.config";
 
 const bcrypt = require("bcrypt");
 

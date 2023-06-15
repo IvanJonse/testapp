@@ -4,7 +4,7 @@ export class PasswordError extends HttpException {
   constructor() {
 	super(
 	  {
-		message: 'Wrong password or you\'re not authorized'
+		message: 'Wrong password'
 	  },
 	  HttpStatus.UNAUTHORIZED
 	);
@@ -15,7 +15,7 @@ export class EmailError extends HttpException {
   constructor() {
 	super(
 	  {
-		message: 'Wrong email or you\'re not authorized'
+		message: 'Wrong email'
 	  },
 	  HttpStatus.UNAUTHORIZED
 	);

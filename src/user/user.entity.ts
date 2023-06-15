@@ -5,7 +5,8 @@ import {
     OneToMany
   } from 'typeorm';
 import { RequestEntity } from '../requests/entities/request.entity';
-import { RoleEnum } from 'src/auth/enums/role.enum';
+import { RoleEnum } from '../auth/enums/role.enum';
+
 
 @Entity('users')
 export class UserEntity {
@@ -29,12 +30,10 @@ export class UserEntity {
     })
     password: string
     
-    //TODO дефолтная роль, убрать null
     @Column({
         type: 'enum',
         enum: RoleEnum,
-        nullable: true,
-        default: RoleEnum.USER
+        default: RoleEnum.ADMIN
     })
     role: RoleEnum
 

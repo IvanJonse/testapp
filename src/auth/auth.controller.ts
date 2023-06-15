@@ -3,9 +3,9 @@ import {
   Controller,
   Post
 } from '@nestjs/common';
+import { ApiTags, ApiOkResponse } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { SignupDto } from './dtos/signup.dto';
-import { ApiTags, ApiOkResponse } from '@nestjs/swagger';
 import { SigninDto } from './dtos/signin.dto';
 import { ResponseAuthDto } from './dtos/response-auth.dto';
 

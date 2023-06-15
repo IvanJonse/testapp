@@ -1,9 +1,9 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { JwtModuleOptions } from '@nestjs/jwt';
-import { configType } from './config.type';
 import { join } from "path";
 import { MailerOptions } from "@nestjs-modules/mailer";
 import { HandlebarsAdapter } from "@nestjs-modules/mailer/dist/adapters/handlebars.adapter";
+import { configType } from './config.type';
 
 export const envFile: configType = {
   dbDatabase: process.env.DB_DATABASE || 'requests',

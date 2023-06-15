@@ -12,15 +12,15 @@ import {
   UseGuards, HttpStatus
 } from "@nestjs/common";
 import { ApiOkResponse, ApiTags } from "@nestjs/swagger";
+import { AuthGuard } from "@nestjs/passport";
 import { RequestsService } from "./requests.service";
 import { CreateRequestDto } from "./dto/create-request.dto";
 import { UpdateRequestDto } from "./dto/update-request.dto";
 import { ResponseRequestDto, ResponseRequestPaginateDto } from "./dto/response-request.dto";
-import { RoleEnum } from "./enums/role.enum";
-import { Roles } from "src/auth/decorators/roles.decorator";
-import { AuthGuard } from "@nestjs/passport";
-import { RolesGuard } from "src/auth/guards/roles.guard";
+import { Roles } from "../auth/decorators/roles.decorator";
+import { RolesGuard } from "../auth/guards/roles.guard";
 import { QueryRequestDto } from "./dto/query-request.dto";
+import { RoleEnum } from "../auth/enums/role.enum";
 
 @ApiTags("Requests")
 @Controller("requests")

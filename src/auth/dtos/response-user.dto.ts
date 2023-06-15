@@ -17,8 +17,8 @@ export class ResponseUserDto {
   @ApiModelPropertyOptional({
     type: "enum",
     enum: Object.keys(RoleEnum),
-    example: RoleEnum.USER,
-    default: RoleEnum.USER
+    example: RoleEnum.ADMIN,
+    default: RoleEnum.ADMIN
   })
   role: RoleEnum;
   

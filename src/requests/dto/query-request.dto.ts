@@ -2,9 +2,9 @@ import {
   ApiModelProperty,
   ApiModelPropertyOptional
 } from "@nestjs/swagger/dist/decorators/api-model-property.decorator";
-import { RequestStatusEnum } from "../enums/request-status.enum";
 import { IsDateString, IsEnum, IsNumber, IsOptional, Max, Min } from "class-validator";
 import { Type } from "class-transformer";
+import { RequestStatusEnum } from "../enums/request-status.enum";
 
 export class QueryRequestDto {
   @ApiModelPropertyOptional({

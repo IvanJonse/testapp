@@ -1,31 +1,37 @@
-## Description
-Basic dependences
+## Описание
+Приложение для обработки заявок.
+Серивис предоставляет возможность отправки заявок для всех пользователей, включая неавторизованных, 
+а также для авторизованных (для админа) их обработки  
+е
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Стек
 
-nodemailer - using for send a message to the mail
-swagger - documentation
-bcrypt - hash password
-typeorm - ORM (for connecting to DB)
+NodeJS для исполнения основного приложения с бизнес логикой, Postgres в качестве СУБД приложения,
+Nodemailer для отправки писем на почту.
+Доступен интерфейс swagger-ui для ознакомления со спецификацией API /api/doc.
 
-## Installation
 
-```bash
-$ npm install
-```
+## Требования
 
-## Running the app
+- node `18.16.0`
+- npm `9.5.1`
+- PostgreSQL `14.2`
+- typescript `5.0.0`
 
-```bash
-# development
-$ npm run start
+## Установка
 
-# watch mode
-$ npm run start:dev
+1. Установите все зависимости
+    ```bash
+    $ npm install
+    ```
+2. Создание конфигурации
+    - Создать `.env`.
+    - Используйте `.env.example`, чтобы найти необходимые параметры.
 
-# production mode
-$ npm run start:prod
-```
+3. Запустите начальную миграцию
+   ```bash
+   $ npm run migrations: run
+   ```
 
 
 

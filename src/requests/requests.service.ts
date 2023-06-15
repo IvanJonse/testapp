@@ -1,28 +1,25 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { DataSource, Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
+import { MailerService } from "@nestjs-modules/mailer";
 import { CreateRequestDto } from "./dto/create-request.dto";
 import { UpdateRequestDto } from "./dto/update-request.dto";
 import { RequestEntity } from "./entities/request.entity";
 import { ResponseRequestDto, ResponseRequestPaginateDto } from "./dto/response-request.dto";
-import { UserEntity } from "../user/user.entity";
 import { RequestStatusEnum } from "./enums/request-status.enum";
 import { QueryRequestDto } from "./dto/query-request.dto";
 import { UserService } from "../user/user.service";
 import { CreatedRequest, ResolvedRequest } from "../mail/templates";
-import { MailerService } from "@nestjs-modules/mailer";
 
 @Injectable()
 export class RequestsService {
   constructor(
     @InjectRepository(RequestEntity) private request: Repository<RequestEntity>,
-    @InjectRepository(UserEntity) private user: Repository<UserEntity>,
     private userService: UserService,
     private mailService: MailerService,
     private dataSource: DataSource
   ) {
   }
-  
   
   async createRequest(body: CreateRequestDto): Promise<ResponseRequestDto> {
     
@@ -87,12 +84,12 @@ export class RequestsService {
     try {
       await queryRunner.manager
         .createQueryBuilder(RequestEntity, 'r')
-        .update(body)
+        .update()
         .set({
           status: RequestStatusEnum.RESOLVED,
           comment: body.comment,
         })
-        .where("r.request_id = :requestId", { requestId })
+        .where("request_id = :requestId", { requestId })
         .execute();
       
       const request = await queryRunner.manager.findOneOrFail(RequestEntity, {
